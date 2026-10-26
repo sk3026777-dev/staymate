@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StayMate – Smart Student Living Finder</title>
+<style>
+:root{--p:#6c5ce7;--pd:#5b4bc4;--tx:#2d3436;--mut:#6a7090;--bd:#e4e6f2;--st:#f5a623}
+*{box-sizing:border-box}
+body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#f4f6f9;color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+a{text-decoration:none;color:inherit}
+input,select,textarea,button{font:inherit;width:100%;padding:9px;border:1px solid var(--bd);border-radius:10px;background:#fff;color:var(--tx)}
+button{background:var(--p);color:#fff;border:0;font-weight:600;cursor:pointer}
+button.ghost{background:transparent;color:var(--p);border:1px solid var(--p)}
+label{display:block;font-size:.78rem;color:var(--mut);margin-bottom:3px}
+.nav{position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;padding:12px 6%;background:rgba(255,255,255,.96);box-shadow:0 2px 15px rgba(0,0,0,.06)}
+.logo{font-size:1.3rem;font-weight:800;color:var(--p)}
+.links{display:flex;align-items:center;gap:6px}
+.links a{font-weight:600;padding:8px 14px;border-radius:8px}
+.links a:hover{background:rgba(108,92,231,.08);color:var(--p)}
+#navLogin{background:var(--p);color:#fff}
+.hero{background:linear-gradient(135deg,#6c5ce7,#8e44ad);color:#fff;text-align:center;padding:60px 16px 44px;border-radius:0 0 24px 24px}
+.hero h1{margin:0 auto 10px;max-width:700px;font-size:clamp(1.6rem,4.5vw,2.6rem);line-height:1.2}
+.hero p{margin:0 0 20px;opacity:.92}.hero small{display:block;margin-top:14px;opacity:.85}
+.search{display:flex;gap:6px;max-width:600px;margin:0 auto;background:#fff;padding:6px;border-radius:12px}
+.search input{border:0;outline:0;flex:1;background:transparent}
+.search button{width:auto;padding:0 24px}
+main{max-width:1050px;margin:0 auto;padding:18px 14px 90px}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px}
+.chk{display:flex;flex-direction:column;justify-content:center;gap:6px}
+.chk label{display:flex;gap:6px;align-items:center;margin:0;font-size:.88rem;color:var(--tx)}
+.chk input{width:auto}
+.bar{margin:16px 0 10px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:16px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.ph{position:relative;height:140px;display:flex;align-items:center;justify-content:center;font-size:3rem;background-size:cover;background-position:center}
+.badge{position:absolute;left:10px;bottom:10px;font-size:.7rem;background:rgba(0,0,0,.55);color:#fff;padding:2px 8px;border-radius:99px}
+.fav{position:absolute;right:10px;top:10px;width:36px;height:36px;padding:0;border-radius:50%;background:#fff;color:#bbb}
+.fav.on{color:#e11d48}
+.cb{padding:12px 14px 14px}
+.top{display:flex;justify-content:space-between;gap:8px}
+.top h3{margin:0;font-size:1.05rem}
+.price{color:var(--p);font-weight:800;white-space:nowrap}
+.rt{color:var(--st);font-weight:600}.rt span{color:var(--mut);font-weight:400}
+.loc{color:var(--mut);font-size:.9rem;margin:2px 0 6px}
+.tag{display:inline-block;font-size:.72rem;padding:2px 9px;margin:0 4px 4px 0;border-radius:99px;background:#f4f6f9;border:1px solid var(--bd);color:var(--mut)}
+.act{display:flex;align-items:center;gap:10px;margin-top:8px}
+.act label{display:flex;gap:6px;align-items:center;margin:0;white-space:nowrap;color:var(--tx);font-size:.85rem}
+.act input{width:auto}.act button{width:auto;flex:1}
+.empty{grid-column:1/-1;text-align:center;color:var(--mut);padding:40px}
+.cmpbar{position:fixed;left:0;right:0;bottom:0;display:none;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-top:1px solid var(--bd);box-shadow:0 -4px 16px rgba(0,0,0,.08);z-index:900}
+.cmpbar.on{display:flex}.cmpbar span{flex:1;font-weight:600}.cmpbar button{width:auto;padding:8px 16px}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hd h2{margin:0}.hd button{width:auto;padding:6px 12px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.rev{border-top:1px solid var(--bd);padding:8px 0;font-size:.92rem}.stars{color:var(--st)}
+.tbl{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:480px}
+th,td{border:1px solid var(--bd);padding:8px;text-align:left;font-size:.9rem}th{background:#f4f6f9}
+footer{text-align:center;color:var(--mut);font-size:.85rem;padding:20px}
+#err{display:none;position:fixed;top:0;left:0;right:0;z-index:100000;background:#b91c1c;color:#fff;padding:10px 14px;font-size:.9rem}
+@media(max-width:560px){.search{flex-direction:column}.search button{width:100%;padding:10px}.links a{padding:8px 8px}}
+</style>
+</head>
+<body>
+<div id="err"></div>
+<nav class="nav">
+  <a class="logo" href="#home">🏠 StayMate</a>
+  <div class="links">
+    <a href="#home">Home</a>
+    <a href="#explore">Explore</a>
+    <a href="#" id="navAdd">Add Listing</a>
+    <a href="#" id="navLogin">Login</a>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <h1>Find your perfect PG or mess near your college</h1>
+  <p>Search by area, compare options and save your favourites.</p>
+  <div class="search">
+    <input id="heroQ" placeholder="Try: Kamla Nagar, Laxmi Nagar, DU…">
+    <button id="heroBtn">Search</button>
+  </div>
+  <small>Listings shown are sample data for this demo. They are not real or verified.</small>
+</section>
+
+<main id="explore">
+  <div class="filters">
+    <div><label>Area / college</label><input id="q" placeholder="Search…"></div>
+    <div><label>Type</label><select id="type"><option value="">PG + Mess</option><option>PG</option><option>Mess</option></select></div>
+    <div><label>For</label><select id="gen"><option value="">Boys + Girls</option><option>Boys</option><option>Girls</option></select></div>
+    <div><label>Food</label><select id="food"><option value="">Any</option><option value="yes">Food included</option><option value="no">No food</option></select></div>
+    <div><label>Max budget: ₹<span id="bv">20000</span></label><input id="bud" type="range" min="1000" max="20000" step="500" value="20000"></div>
+    <div><label>Sort</label><select id="sort"><option value="r">Best rating</option><option value="pa">Price: low to high</option><option value="pd">Price: high to low</option></select></div>
+    <div class="chk"><label><input type="checkbox" id="ac"> AC only</label><label><input type="checkbox" id="favOnly"> ♥ Saved only</label></div>
+  </div>
+  <div class="bar" id="cnt"></div>
+  <div class="grid" id="list"></div>
+</main>
+
+<div class="cmpbar" id="cmpbar"><span id="cmpTxt"></span><button id="cmpGo">Compare</button><button class="ghost" id="cmpClr">Clear</button></div>
+<footer id="foot">StayMate · B.Tech CSE mini project · Sample data only</footer>
+
+<script>
+(function () {
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fail(m) { const b = $("err"); b.textContent = "StayMate error: " + m; b.style.display = "block"; }
+window.addEventListener("error", e => fail(e.message + " (line " + e.lineno + ")"));
+window.addEventListener("unhandledrejection", e => fail(String((e.reason && e.reason.message) || e.reason)));
+
+// Sample data (demo only, NOT real or verified)
+const SEED = [
+ {type:"PG",name:"Sample Boys PG",area:"Kamla Nagar",gen:"Boys",price:7500,share:"Double",food:"Veg meals included",ac:0,near:"Near DU North Campus",phone:"Not provided",photo:"",rev:[{name:"Demo user",stars:4,comment:"Sample review for demo."}]},
+ {type:"PG",name:"Sample Girls Hostel",area:"Mukherjee Nagar",gen:"Girls",price:9500,share:"Single",food:"3 time meals",ac:1,near:"Near coaching hub",phone:"Not provided",photo:"",rev:[{name:"Demo user",stars:5,comment:"Sample review for demo."}]},
+ {type:"PG",name:"Sample Budget Stay",area:"Laxmi Nagar",gen:"Boys",price:6000,share:"Triple",food:"No food",ac:0,near:"Near metro station",phone:"Not provided",photo:"",rev:[]},
+ {type:"Mess",name:"Sample Tiffin Service",area:"Kamla Nagar",gen:"Boys",price:3200,share:"Monthly",food:"Veg, 2 time",ac:0,near:"Near DU North Campus",phone:"Not provided",photo:"",rev:[]}
+];
+const ls = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const H = {"Content-Type": "application/json"};
+const avg = l => l.rev.length ? l.rev.reduce((a, r) => a + r.stars, 0) / l.rev.length : 0;
+const foodYes = l => !/^no/i.test(l.food);
+let all = [], useAPI = true, cmp = [];
+let favs = new Set(ls.get("sm_favs", []));
+let reviewed = new Set(ls.get("sm_reviewed", []));
+let user = ls.get("sm_user", null);
+
+function clean(l) {                       // make API data safe, whatever it contains
+  l.id = Number(l.id); l.price = Number(l.price) || 0;
+  l.rev = Array.isArray(l.rev) ? l.rev : [];
+  l.ac = (l.ac == 1 || /^(yes|true|1)$/i.test(String(l.ac))) ? 1 : 0;
+  ["type","name","area","gen","share","food","near","phone","photo"].forEach(k => { l[k] = l[k] == null ? "" : String(l[k]); });
+  return l;
+}
+async function load() {
+  try {
+    throw new Error("published demo: browser storage only");
+    let d = await r.json();
+    if (!d.length) {
+      for (const l of SEED) await fetch("/api/listings", {method:"POST", headers:H, body:JSON.stringify(l)});
+      d = await (await fetch("/api/listings")).json();
+    }
+    return d.map(clean);
+  } catch (e) {
+    useAPI = false;
+    return (ls.get("sm_listings", null) || SEED.map((l, i) => ({...l, id: i + 1}))).map(clean);
+  }
+}
+const saveLocal = () => { if (!useAPI) ls.set("sm_listings", all); };
+const byId = id => all.find(x => x.id === Number(id));
+
+function card(l) {
+  const hue = (l.id * 47) % 360, a = avg(l), photo = /^https?:\/\//.test(l.photo);
+  const bg = photo ? `background-image:url('${esc(l.photo)}')` : `background-image:linear-gradient(135deg,hsl(${hue} 70% 62%),hsl(${hue + 40} 70% 48%))`;
+  return `<article class="card">
+   <div class="ph" style="${bg}">${photo ? "" : (l.type === "Mess" ? "🍛" : "🏠")}<span class="badge">${photo ? "Owner photo" : "Sample photo"}</span>
+    <button class="fav ${favs.has(l.id) ? "on" : ""}" data-fav="${l.id}" title="Save">♥</button></div>
+   <div class="cb">
+    <div class="top"><h3>${esc(l.name)}</h3><span class="price">₹${l.price}</span></div>
+    <div class="rt">${l.rev.length ? "★ " + a.toFixed(1) + " <span>(" + l.rev.length + " reviews)</span>" : "<span>No reviews yet</span>"}</div>
+    <div class="loc">📍 ${esc(l.area)} · ${esc(l.near)}</div>
+    <span class="tag">${esc(l.type)}</span><span class="tag">${esc(l.gen)}</span><span class="tag">${esc(l.share)}</span>${l.ac ? '<span class="tag">AC</span>' : ""}<span class="tag">${esc(l.food)}</span>
+    <div class="act"><label><input type="checkbox" data-cmp="${l.id}" ${cmp.includes(l.id) ? "checked" : ""}> Compare</label><button class="ghost" data-open="${l.id}">Details</button></div>
+   </div></article>`;
+}
+function render() {
+  const q = $("q").value.toLowerCase(), t = $("type").value, g = $("gen").value, f = $("food").value, b = +$("bud").value, s = $("sort").value;
+  $("bv").textContent = b;
+  const r = all.filter(l => (!q || (l.area + l.name + l.near).toLowerCase().includes(q)) && (!t || l.type === t) && (!g || l.gen === g) &&
+    (!f || (f === "yes") === foodYes(l)) && (!$("ac").checked || l.ac) && (!$("favOnly").checked || favs.has(l.id)) && l.price <= b);
+  r.sort((x, y) => s === "r" ? avg(y) - avg(x) : s === "pa" ? x.price - y.price : y.price - x.price);
+  $("cnt").textContent = r.length + " listing" + (r.length === 1 ? "" : "s") + " found";
+  $("list").innerHTML = r.length ? r.map(card).join("") : '<div class="empty">No listings match. Try a higher budget or another area.</div>';
+  $("cmpbar").classList.toggle("on", cmp.length > 0);
+  $("cmpTxt").textContent = cmp.length + " of 3 selected for comparison";
+}
+
+// Popup: built fresh every time, styled inline, so nothing else can hide it
+function openM(html, wide) {
+  closeM();
+  const ov = document.createElement("div");
+  ov.id = "sm-overlay";
+  ov.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.55);z-index:99999";
+  const box = document.createElement("div");
+  box.style.cssText = "background:#fff;color:#2d3436;border-radius:16px;width:100%;max-width:" + (wide ? "820px" : "560px") + ";max-height:90vh;overflow:auto;padding:18px";
+  box.innerHTML = html;
+  ov.appendChild(box);
+  ov.addEventListener("click", e => { if (e.target === ov) closeM(); });
+  document.body.appendChild(ov);
+}
+function closeM() { const o = $("sm-overlay"); if (o) o.remove(); }
+const head = t => `<div class="hd"><h2>${t}</h2><button class="ghost" data-act="close">✕</button></div>`;
+
+function details(id) {
+  const l = byId(id);
+  openM(head(esc(l.name)) + `
+   <p class="price">₹${l.price} / month</p>
+   <p>📍 ${esc(l.area)} · ${esc(l.near)}<br>🛏 ${esc(l.type)} · ${esc(l.gen)} · ${esc(l.share)} · ${l.ac ? "AC" : "Non-AC"}<br>🍛 ${esc(l.food)}<br>📞 ${esc(l.phone)}</p>
+   <h3>Reviews ${l.rev.length ? "(" + avg(l).toFixed(1) + " ★)" : ""}</h3>
+   ${l.rev.map(r => `<div class="rev"><span class="stars">${"★".repeat(r.stars)}${"☆".repeat(5 - r.stars)}</span> <b>${esc(r.name)}</b><br>${esc(r.comment)}</div>`).join("") || "<p>No reviews yet. Be the first!</p>"}
+   ${reviewed.has(l.id) ? "<p>You already reviewed this listing (one review per listing).</p>" : `<h3>Write a review</h3>
+   <div class="row"><input id="rn" placeholder="Your name" value="${esc(user || "")}"><select id="rs"><option value="5">5 ★</option><option value="4">4 ★</option><option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option></select></div>
+   <textarea id="rc" rows="2" placeholder="How was your experience?" style="margin:8px 0"></textarea>
+   <button data-act="review" data-id="${l.id}">Submit review</button>`}`);
+}
+async function addReview(id) {
+  const name = $("rn").value.trim(), comment = $("rc").value.trim(), stars = +$("rs").value;
+  if (!name || !comment) return alert("Please enter your name and review.");
+  if (useAPI) await fetch(`/api/listings/${id}/reviews`, {method:"POST", headers:H, body:JSON.stringify({name, stars, comment})});
+  byId(id).rev.push({name, stars, comment});
+  reviewed.add(Number(id)); ls.set("sm_reviewed", [...reviewed]); saveLocal(); render(); details(id);
+}
+function openAdd() {
+  openM(head("Add a listing") + `
+   <div class="row"><div><label>Type</label><select id="at"><option>PG</option><option>Mess</option></select></div><div><label>For</label><select id="ag"><option>Boys</option><option>Girls</option></select></div></div>
+   <label style="margin-top:8px">Name</label><input id="an"><label style="margin-top:8px">Area</label><input id="aa">
+   <div class="row" style="margin-top:8px"><div><label>Rent (₹/month)</label><input id="ap" type="number"></div><div><label>Sharing</label><select id="as"><option>Single</option><option>Double</option><option>Triple</option><option>Monthly</option></select></div></div>
+   <label style="margin-top:8px">Near which college / landmark</label><input id="ar">
+   <label style="margin-top:8px">Food (write "No food" if none)</label><input id="af" placeholder="Veg meals included">
+   <label style="margin-top:8px">Phone</label><input id="ph">
+   <label style="margin-top:8px">Photo URL (optional, https://…)</label><input id="aph">
+   <label style="margin-top:8px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="aac" style="width:auto"> AC available</label>
+   <button style="margin-top:10px" data-act="addl">Add listing</button>`);
+}
+async function addListing() {
+  const l = {type:$("at").value, name:$("an").value.trim(), area:$("aa").value.trim(), gen:$("ag").value, price:+$("ap").value, share:$("as").value,
+    food:$("af").value.trim() || "No food", ac:$("aac").checked ? 1 : 0, near:$("ar").value.trim() || "Not given",
+    phone:$("ph").value.trim() || "Not provided", photo:$("aph").value.trim(), rev:[]};
+  if (!l.name || !l.area || !l.price) return alert("Name, area and rent are required.");
+  if (useAPI) { const r = await fetch("/api/listings", {method:"POST", headers:H, body:JSON.stringify(l)}); l.id = (await r.json()).id; }
+  else l.id = Date.now();
+  all.push(clean(l)); saveLocal(); closeM(); render(); location.hash = "explore";
+}
+let authMode = "login";
+function openLogin(mode) {
+  authMode = mode || "login";
+  const reg = authMode === "register";
+  openM(head(user ? "Hello, " + esc(user) : (reg ? "Register" : "Login")) + (user
+    ? `<p>You are logged in as <b>${esc(user)}</b>.</p><button data-act="logout">Logout</button>`
+    : `${reg ? '<label>Full name</label><input id="ln" placeholder="Your name"><div style="height:8px"></div>' : ""}
+       <label>Email</label><input id="le" type="email" placeholder="you@example.com"><div style="height:8px"></div>
+       <label>Password</label><input id="lp" type="password" placeholder="At least 6 characters">
+       <p id="lmsg" style="color:#b91c1c;font-size:.85rem;min-height:1.2em;margin:6px 0"></p>
+       <button data-act="${reg ? "doreg" : "dologin"}">${reg ? "Create account" : "Login"}</button>
+       <p style="text-align:center;margin-top:12px">${reg ? "Already have an account?" : "No account yet?"} <a href="#" data-act="${reg ? "tologin" : "toreg"}" style="color:#6c5ce7;font-weight:700">${reg ? "Login" : "Register"}</a></p>
+       <p style="font-size:.78rem;color:#6a7090">Demo only: accounts are saved in this browser, not on a server.</p>`));
+}
+async function sha(s) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+async function doAuth(reg) {
+  const email = $("le").value.trim().toLowerCase(), pw = $("lp").value, name = reg ? $("ln").value.trim() : "", m = $("lmsg");
+  if (!/^\S+@\S+\.\S+$/.test(email)) { m.textContent = "Enter a valid email."; return; }
+  if (pw.length < 6) { m.textContent = "Password must be at least 6 characters."; return; }
+  const users = ls.get("sm_users", {}), h = await sha(pw);
+  if (reg) {
+    if (!name) { m.textContent = "Enter your name."; return; }
+    if (users[email]) { m.textContent = "This email is already registered. Please login."; return; }
+    users[email] = {name, h}; ls.set("sm_users", users);
+  } else if (!users[email] || users[email].h !== h) { m.textContent = "Wrong email or password."; return; }
+  user = users[email].name; ls.set("sm_user", user); $("navLogin").textContent = "Hi, " + user; closeM();
+}
+function showCompare() {
+  const rows = [["Rent", l => "₹" + l.price], ["Rating", l => l.rev.length ? avg(l).toFixed(1) + " ★ (" + l.rev.length + ")" : "No reviews"],
+    ["Area", l => l.area], ["Near", l => l.near], ["Type", l => l.type], ["For", l => l.gen], ["Sharing", l => l.share], ["Food", l => l.food], ["AC", l => l.ac ? "Yes" : "No"]];
+  const items = cmp.map(byId).filter(Boolean);
+  openM(head("Compare listings") + `<div class="tbl"><table><tr><th></th>${items.map(l => `<th>${esc(l.name)}</th>`).join("")}</tr>
+   ${rows.map(([k, f]) => `<tr><th>${k}</th>${items.map(l => `<td>${esc(f(l))}</td>`).join("")}</tr>`).join("")}</table></div>`, true);
+}
+
+// ---- Events: one listener for the whole page ----
+document.addEventListener("click", e => {
+  const T = e.target, fav = T.closest("[data-fav]"), op = T.closest("[data-open]"), cm = T.closest("[data-cmp]"), ac = T.closest("[data-act]");
+  if (fav) { const id = Number(fav.dataset.fav); favs.has(id) ? favs.delete(id) : favs.add(id); ls.set("sm_favs", [...favs]); render(); }
+  if (op) details(op.dataset.open);
+  if (cm) {
+    const id = Number(cm.dataset.cmp);
+    if (cm.checked) { if (cmp.length >= 3) { cm.checked = false; return alert("You can compare up to 3 listings."); } cmp.push(id); }
+    else cmp = cmp.filter(x => x !== id);
+    render();
+  }
+  if (ac) {
+    e.preventDefault(); const a = ac.dataset.act;
+    if (a === "close") closeM();
+    if (a === "review") addReview(ac.dataset.id);
+    if (a === "addl") addListing();
+    if (a === "dologin") doAuth(false);
+    if (a === "doreg") doAuth(true);
+    if (a === "toreg") openLogin("register");
+    if (a === "tologin") openLogin("login");
+    if (a === "logout") { user = null; ls.set("sm_user", null); $("navLogin").textContent = "Login"; closeM(); }
+  }
+  if (T.closest("#navAdd")) { e.preventDefault(); openAdd(); }
+  if (T.closest("#navLogin")) { e.preventDefault(); openLogin(); }
+  if (T.closest("#cmpGo")) { cmp.length < 2 ? alert("Select at least 2 listings.") : showCompare(); }
+  if (T.closest("#cmpClr")) { cmp = []; render(); }
+  if (T.closest("#heroBtn")) { $("q").value = $("heroQ").value; render(); location.hash = "explore"; }
+});
+["q","type","gen","food","bud","sort","ac","favOnly"].forEach(i => $(i).addEventListener("input", render));
+$("heroQ").addEventListener("keydown", e => { if (e.key === "Enter") $("heroBtn").click(); });
+
+if (user) $("navLogin").textContent = "Hi, " + user;
+$("foot").textContent += " · v4";
+load().then(d => { all = d; render(); });
+})();
+</script>
+</body>
+</html>
